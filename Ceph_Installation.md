@@ -10,7 +10,7 @@ apt update
 apt install -y podman cephadm
 
 # Bootstrap the first Node
-cephadm bootstrap --mon-ip 100.64.10.51 --cluster-network 100.64.15.0/24
+cephadm bootstrap --mon-ip 100.64.15.51 --cluster-network 100.64.15.0/24
 
 # should produce output and then drop this infos
 Ceph Dashboard is now available at:
@@ -48,7 +48,8 @@ ssh-copy-id -f -i /etc/ceph/ceph.pub root@ceph02.tkclabs.io
 
 # Add the node
 # Only admin nodes need _admin label
-cephadm shell -- ceph orch host add ceph02 100.64.10.52 --labels _admin
+cephadm shell -- ceph orch host add ceph02 100.64.15.52 --labels _admin
+cephadm shell -- ceph orch host add ceph03 100.64.15.53 --labels _admin
 
 # Check cluster status
 cephadm shell -- ceph status
@@ -83,3 +84,23 @@ rbd device map rados-pool01/test01
 rbd device unmap rados-pool01/test01
 ```
 
+
+## cephadm on AlmaLinux 9
+
+```bash
+# Get Standalone
+CEPH_RELEASE=18.2.1
+curl --silent --remote-name --location https://download.ceph.com/rpm-${CEPH_RELEASE}/el9/noarch/cephadm
+
+# Then install
+chmod 0700 ./cephadm
+./cephadm add-repo --release reef
+./cephadm install
+
+# Set Storage Net IPs
+nmcli connection modify "Wired connection 1" connection.id enp11s0 ipv4.method manual ipv4.addresses 100.64.15.51/24 ipv4.never-default yes ipv6.method disabled
+nmcli connection modify "Wired connection 1" connection.id enp11s0 ipv4.method manual ipv4.addresses 100.64.15.52/24 ipv4.never-default yes ipv6.method disabled
+nmcli connection modify "Wired connection 1" connection.id enp11s0 ipv4.method manual ipv4.addresses 100.64.15.53/24 ipv4.never-default yes ipv6.method disabled
+
+# Bootstrap away
+```

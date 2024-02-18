@@ -99,3 +99,13 @@ Network 10gbit marked as autostarted
 
 root@host01:~/ovs-networks# 
 ```
+
+## Set an IP directly on the bridge interface
+
+- Could not get network manager to allocate one, setting directly works.
+
+```bash
+# Can we set an IP directly since Network Manager is being a jerk?
+ip addr add 100.64.15.21/24 dev br210
+ip link set br210 up
+```

@@ -2,7 +2,7 @@
 
 Generic Debian configuration notes
 
-## Statkc IP Address
+## Static IP Address
 
 ```bash
 auto enp0s3
@@ -12,6 +12,18 @@ iface enp0s3 inet static
         broadcast 192.168.1.255
         gateway 192.168.1.1fa
         dns-nameservers 8.8.8.8
+
+# Or a bridge
+iface enp0s3 inet manual
+iface br0 inet static
+    bridge_ports enp0s3
+        address 192.168.1.240/24
+        gateway 192.168.1.1
+        dns-search tkclabs.io
+    bridge_stp off
+    bridge_waitport 0
+
+auto br0
 ```
 
 ## SSH Host Keys

@@ -183,3 +183,28 @@ systemctl --user start nats.service
 # Enable Linger so container keeps running
 sudo loginctl enable-linger tkcadmin
 ```
+
+## NATS Box CLI Config and examples
+
+```bash
+# Create our NATS context dir
+mkdir .config/nats/context
+# Start nats-box mounting our context dir and add a new context
+podman run -it --rm -v "$HOME/.config/nats:/nsc/.config/nats:z" natsio/nats-box nats context add tkclabs --server nats://nat01.tkclabs.io,nats://nats02.tkclabs.io,nats://nats03.tkclabs.io --description "TKCLabs Primary"
+
+# List contexts
+podman run -it --rm -v "$HOME/.config/nats:/nsc/.config/nats:z" natsio/nats-box nats context ls
+
+# Select contexts
+podman run -it --rm -v "$HOME/.config/nats:/nsc/.config/nats:z" natsio/nats-box nats context select tkclabs
+
+# Start a subscription; we will publish to this cli.demo subject next
+podman run -it --rm -v "$HOME/.config/nats:/nsc/.config/nats:z" natsio/nats-box nats sub cli.demo
+
+# Publish to cli.demo
+podman run -it --rm -v "$HOME/.config/nats:/nsc/.config/nats:z" natsio/nats-box nats pub cli.demo "publish this message"
+
+# Or multiline
+podman run -it --rm -v "$HOME/.config/nats:/nsc/.config/nats:z" natsio/nats-box nats pub cli.demo
+# Enter text then ctrl-d to publish
+```

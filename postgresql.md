@@ -36,3 +36,25 @@ systemctl enable --now postgresql-15.service
 firewall-cmd --add-service postgresql
 firewall-cmd --add-service postgresql --permanent
 ```
+
+## Adding a user for terrform backend
+
+This is an example of creating a database for a Terraform backend then adding a user with full access to that database.
+
+```sql
+-- Create the Database for Terraform Backend
+CREATE DATABASE tf_vault_config;
+
+-- Create the Role with the login privilege
+-- Roles in PostgreSQL can be both Users and Groups
+CREATE ROLE terraform LOGIN PASSWORD 'SecurePassword';
+
+-- Grant all privileges on tf_vault_config Database
+GRANT ALL PRIVILEGES ON DATABASE tf_vault_config TO terraform;
+
+-- Connect to tf_vault_config
+\c tf_vault_config;
+
+-- Grant all privileges on tf_vault_config
+GRANT ALL ON SCHEMA public TO terraform;
+```

@@ -165,6 +165,9 @@ pip install --upgrade pip
 # can also use git+https:// and git+ssh:// URI designators if desired.
 pip install git+file:///home/tkcadmin/repos/github/knotsalt/salt@v3006.6-adelaide
 
+# Let salt set process names when run from this venv
+pip install setproctitle
+
 # Run salt-master in foreground with debug logging using salt-v3.9.2-gcc-debug
 # assuming the venv is active
 salt-master -l debug
@@ -174,6 +177,25 @@ salt-master -l debug
 /opt/venvs/salt-v3.9.2-gcc-debug/bin/salt-master -l debug
 #
 # Salt configs would need to be added to /etc/salt to test specific use-case issues
+```
+
+##### A systemd service unit file can be created too
+
+```ini
+# /etc/systemd/system/salt-master.service 
+[Unit]
+Description=The Salt Master Server
+Documentation=man:salt-master(1) file:///usr/share/doc/salt/html/contents.html https://docs.saltproject.io/en/latest/contents.html
+After=network.target
+
+[Service]
+LimitNOFILE=100000
+Type=notify
+NotifyAccess=all
+ExecStart=/opt/venvs/salt-v3.9.2-gcc-debug/bin/salt-master
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 ## Python Development Mode

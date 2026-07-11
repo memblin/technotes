@@ -8,6 +8,10 @@ To work around this I watned to move to a self-hosted Git solution.
 
 - [Gitea](https://about.gitea.com/)
 
+> [!NOTE]
+> This initial version does not include SSL/TLS on the WebUI endpoint. A TODO
+> for the future perhaps.
+
 ## Quadlet
 
 We're lauching in a systemd container via quadlet using podman volumes for our
@@ -56,7 +60,7 @@ systemctl start gitea.service
 
 Install and register the Gitea Runner
 
-- https://gitea.com/gitea/runner
+- <https://gitea.com/gitea/runner>
 
 ```bash
 mkdir -p /opt/gitia-runners/TKC-Labs && cd $_
@@ -113,4 +117,21 @@ sudo systemctl status gitea-runner-tkc-labs.service
 
 Get the CLI
 
-- https://gitea.com/gitea/tea
+- <https://gitea.com/gitea/tea>
+
+## Migrate from GitHub to Gitea
+
+An example of migrating issues, pull requests, and other history
+from a GitHub repo to a new Gitea repo.  The Gitea repo is created
+during the migration, do not pre-create.  This was run after an
+access token with appropriate permissions was created for my user.
+
+```bash
+tea repos migrate \
+  --service github \
+  --clone-url https://github.com/TKC-Labs/go-virt.git \
+  --owner TKC-Labs \
+  --name go-virt \
+  --issues --labels --pull-requests --milestones \
+  --auth-token $GITHUB_TOKEN
+```
